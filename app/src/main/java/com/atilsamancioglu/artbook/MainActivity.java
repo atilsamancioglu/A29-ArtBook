@@ -15,45 +15,45 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.atilsamancioglu.artbook.databinding.ActivityMainBinding;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView listView;
     ArrayList<String> nameArray;
     ArrayList<Integer> idArray;
     ArrayAdapter arrayAdapter;
+    private ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        listView = findViewById(R.id.listView);
         nameArray = new ArrayList<String>();
         idArray = new ArrayList<Integer>();
 
 
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,nameArray);
-        listView.setAdapter(arrayAdapter);
+        binding.listView.setAdapter(arrayAdapter);
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        binding.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("artId",idArray.get(position));
                 intent.putExtra("info","old");
                 startActivity(intent);
 
-
             }
         });
 
-
         getData();
-
-
 
     }
 
@@ -69,9 +69,7 @@ public class MainActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 nameArray.add(cursor.getString(nameIx));
                 idArray.add(cursor.getInt(idIx));
-
             }
-
             arrayAdapter.notifyDataSetChanged();
 
             cursor.close();
@@ -85,12 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         //Inflater
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.add_art,menu);
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -99,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.add_art_item) {
-            Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra("info","new");
             startActivity(intent);
         }

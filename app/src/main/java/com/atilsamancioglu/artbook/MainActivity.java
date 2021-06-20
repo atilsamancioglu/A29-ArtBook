@@ -2,6 +2,7 @@ package com.atilsamancioglu.artbook;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,10 +22,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> nameArray;
-    ArrayList<Integer> idArray;
-    ArrayAdapter arrayAdapter;
     private ActivityMainBinding binding;
+    ArrayList<Art> artList;
+    ArtAdapter artAdapter;
 
 
     @Override
@@ -34,24 +34,11 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-        nameArray = new ArrayList<String>();
-        idArray = new ArrayList<Integer>();
+        artList = new ArrayList<Art>();
 
-
-        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,nameArray);
-        binding.listView.setAdapter(arrayAdapter);
-
-
-        binding.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtra("artId",idArray.get(position));
-                intent.putExtra("info","old");
-                startActivity(intent);
-
-            }
-        });
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        artAdapter = new ArtAdapter(artList);
+        binding.recyclerView.setAdapter(artAdapter);
 
         getData();
 
@@ -67,10 +54,12 @@ public class MainActivity extends AppCompatActivity {
             int idIx = cursor.getColumnIndex("id");
 
             while (cursor.moveToNext()) {
-                nameArray.add(cursor.getString(nameIx));
-                idArray.add(cursor.getInt(idIx));
+                String name = cursor.getString(nameIx);
+                int id = cursor.getInt(idIx);
+                Art art = new Art(name,id);
+                artList.add(art);
             }
-            arrayAdapter.notifyDataSetChanged();
+            artAdapter.notifyDataSetChanged();
 
             cursor.close();
         } catch (Exception e) {

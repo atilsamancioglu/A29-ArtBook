@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +27,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ArtHolder> {
 
     @Override
     public void onBindViewHolder(ArtAdapter.ArtHolder holder, int position) {
-        holder.binding.recyclerViewTextView.setText(artArrayList.get(position).name);
+        holder.binding.recyclerTextView.setText(artArrayList.get(position).name);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,6 +49,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ArtHolder> {
 
         public ArtHolder(RecyclerRowBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
     }
 

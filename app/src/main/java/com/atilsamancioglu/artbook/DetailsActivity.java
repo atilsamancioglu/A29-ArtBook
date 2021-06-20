@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -25,6 +26,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.atilsamancioglu.artbook.databinding.ActivityDetailsBinding;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -102,7 +105,16 @@ public class DetailsActivity extends AppCompatActivity {
     public void selectImage(View view) {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Snackbar.make(view,"Permission needed for gallery", Snackbar.LENGTH_INDEFINITE).setAction("Give Permission", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+                }).show();
+            } else {
+                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
         } else {
             Intent intentToGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activityResultLauncher.launch(intentToGallery);
